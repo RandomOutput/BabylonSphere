@@ -7,6 +7,7 @@ varying vec2 vUV;
 
 // Uniforms
 uniform vec3 target;
+uniform float flatness;
 
 // Refs
 uniform vec3 cameraPosition;
@@ -25,13 +26,14 @@ void main(void) {
     //float cameraNormalDot = dot(normalize(toCamera), vNormal); 
 
     if(!gl_FrontFacing) {
+        discard;
         color = vec3(0.5, 0.5, 0.5);
         
         /*
         if(cameraNormalDot >= 0.0) {
-            discard;
+            
         }*/
     }
         
-    gl_FragColor = vec4(color, alpha);
+    gl_FragColor = vec4(color, 1.0);
 }
