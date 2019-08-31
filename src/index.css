@@ -1,0 +1,41 @@
+/* .image-container {
+  width: 150px;
+  height: 30px;
+  border-width: 3pt;
+  border-radius: 3pt 3pt 3pt 3pt;
+  border-color: #777;
+  border-style: solid;
+  background-color: #999;
+  color: #DDD;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+} */
+
+.image-container {
+  display: flex;
+}
+
+.file-selector {
+  width: 0.01pt;
+  height: 0.01pt;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+  z-index: -1;
+}
+
+.file-label {
+  width: 150px;
+  font-family: sans-serif;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  vertical-align: middle;
+  text-align: center;
+  cursor: pointer;
+  color: #DDD;
+  background-color: #999;
+  border-style: solid;
+  border-width: 3px;
+  font-weight: bold;
+}

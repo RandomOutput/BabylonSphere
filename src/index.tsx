@@ -3,6 +3,9 @@ import * as BABYLON from 'babylonjs';
 import BabylonScene, { SceneEventArgs } from './SceneComponent'; // import the component above linking to file we just created.
 import ReactDOM from 'react-dom';
 import 'babylonjs-loaders';
+import ImageContainer from './ImageContainer';
+import Scene from './SceneComponent';
+import './index.css';
 //import { AnimationGroup } from 'babylonjs';
 
 let flatnessDirection = 1.0;
@@ -10,7 +13,28 @@ let flatnessSpeed = 0.5;
 let flatness = 0.0;
 let lastTime = Date.now();
 
-class PageWithScene extends React.Component<{}, {}> {
+let shaderMaterial: BABYLON.ShaderMaterial | null;
+
+export type PageProps = {
+
+}
+
+export type PageState = {
+  scene?: BABYLON.Scene;
+  hasImage: boolean;
+}
+
+class PageWithScene extends React.Component<PageProps, PageState> {
+  constructor(props: PageProps) {
+    super(props);
+
+    this.state = {
+      scene: undefined,
+      hasImage: false,
+    }
+  }
+
+
   onSceneMount(e: SceneEventArgs) : void {
     const speed:number = 1.0;
     const worldDistance:number = 20;
@@ -23,8 +47,10 @@ class PageWithScene extends React.Component<{}, {}> {
     
     const { canvas, scene, engine } = e;
     
-    scene.clearColor = new BABYLON.Color4(1.0, 1.0, 1.0, 1.0);
+    this.setState({ scene: scene });
     
+    scene.clearColor = new BABYLON.Color4(1.0, 1.0, 1.0, 1.0);
+
     // This creates and positions a free camera (non-mesh)
     var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2.0, Math.PI / 2.0, 30.0, new BABYLON.Vector3(0,0,0), scene);
 
@@ -38,7 +64,7 @@ class PageWithScene extends React.Component<{}, {}> {
     camera.attachControl(canvas, true);
     camera.minZ = 0.1;
 
-    const shaderMaterial = this.setupShaderMaterial(scene, planeDirection);
+    shaderMaterial = this.setupShaderMaterial(scene, planeDirection);
 
     const groundMaterial = this.setupGroundMaterial(scene);
 
@@ -115,18 +141,13 @@ class PageWithScene extends React.Component<{}, {}> {
         const deltaTime = (Date.now() - lastTime) / 1000;
         lastTime = Date.now();
         const flatnessDelta = flatnessDirection * flatnessSpeed * deltaTime; 
-        console.log("flatness1", flatness);
-        console.log("flatnessDelta", flatnessDelta);
         flatness += flatnessDelta;
-        console.log("flatness", flatness);
         
         if(flatness >= 1.0) {
           flatness = 1.0;
-          console.log("set high", flatness);
         }
         else if(flatness <= 0) {
           flatness = 0;
-          console.log("set low", flatness);
         }
         
         if(shaderMaterial) { 
@@ -167,10 +188,56 @@ class PageWithScene extends React.Component<{}, {}> {
     return groundMaterial;
   }
 
+  setTexture(url: string) {
+    if(!this.state.scene || !shaderMaterial) {
+      return;
+    }
+    console.log("set texture", url);
+    const newTex = new BABYLON.Texture(url, this.state.scene);
+    shaderMaterial.setTexture("textureSampler", newTex);
+  }
+
+  imageChange(e : React.ChangeEvent<HTMLInputElement>) {
+    console.log("imageChange", e);
+
+    if(!e.target.files) {
+      return;
+    }
+    const files = Array.from(e.target.files);
+    
+    if(files.length <= 0) {
+      return;
+    }
+
+    let reader = new FileReader();
+    reader.onload = (e: any) => {
+      if(e === null || e.target === null) {
+        return;
+      }
+
+      let buffer:ArrayBuffer = e.target.result;
+      let url = URL.createObjectURL(new Blob([buffer]));
+      this.setTexture(url);
+    };
+
+    reader.readAsArrayBuffer(files[0]);
+  }
+
   render() {
+    const showScene = () => {
+      if(true) {
+        return <BabylonScene height={400} width={800} onSceneMount={this.onSceneMount.bind(this)} />
+      }
+      
+      return;
+    }
+
     return (
       <div>
-        <BabylonScene height={400} width={800} onSceneMount={this.onSceneMount.bind(this)} />
+        <div>
+          <ImageContainer onChange={this.imageChange.bind(this)}/>
+        </div>
+        {showScene()}
       </div>
     )
   }
