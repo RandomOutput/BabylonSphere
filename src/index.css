@@ -12,6 +12,7 @@
   display: flex;
 } */
 
+
 .image-container {
   display: flex;
 }
@@ -33,9 +34,22 @@
   vertical-align: middle;
   text-align: center;
   cursor: pointer;
-  color: #DDD;
-  background-color: #999;
+  color: #efefff;
+  background-color: #6f8ea8;
+  border-color: #5b758a;
   border-style: solid;
+  border-radius: 5pt;
   border-width: 3px;
   font-weight: bold;
+}
+
+.file-label:hover{
+  color: #efefff;
+  background-color: #5b758a;
+  border-color: #5b758a;
+}
+
+.file-label > svg {
+  font-size: 20px;
+  margin-right: 7px;
 }
