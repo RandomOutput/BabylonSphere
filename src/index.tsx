@@ -225,21 +225,21 @@ class PageWithScene extends React.Component<PageProps, PageState> {
 
   render() {
     const showScene = () => {
-      if(true) {
-        return <BabylonScene height={400} width={800} onSceneMount={this.onSceneMount.bind(this)} />
-      }
-      
-      return;
+      return (
+      <div className="canvas-container">
+        <BabylonScene height={400} width={800} onSceneMount={this.onSceneMount.bind(this)} />
+      </div>
+      );
     }
 
     return (
-      <div>
-        <div>
-          <ImageContainer onChange={this.imageChange.bind(this)}/>
-        </div>
-        {showScene()}
+    <div>
+      {showScene()}
+      <div className="UI-container">
+      <ImageContainer onChange={this.imageChange.bind(this)}/>
       </div>
-    )
+    </div>
+    );
   }
 }
 

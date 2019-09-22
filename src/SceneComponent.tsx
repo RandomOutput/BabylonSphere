@@ -1,5 +1,6 @@
 import * as BABYLON from 'babylonjs';
 import React from 'react';
+import { throwStatement } from '@babel/types';
 
 export type SceneEventArgs = {
   engine: BABYLON.Engine,
@@ -22,6 +23,13 @@ export default class Scene extends React.Component<SceneProps & React.HTMLAttrib
   private canvas: HTMLCanvasElement;
 
   onResizeWindow = () => {
+    if (this.canvas) {
+      this.canvas.style.width = '100%';
+      this.canvas.style.height = '100vh';
+      this.canvas.width = this.canvas.offsetWidth;
+      this.canvas.height = this.canvas.offsetHeight;
+    }
+
     if (this.engine) {
       this.engine.resize();
     }
@@ -60,6 +68,8 @@ export default class Scene extends React.Component<SceneProps & React.HTMLAttrib
     if (c !== null) {
       this.canvas = c;
     }
+
+    this.onResizeWindow();
   }
 
   render () {
