@@ -1,10 +1,8 @@
-import React from 'react';
-
-export type LayerProps = {
+export default class Layer {
   file : File;
   distance: Number;
-};
-
-export default class Layer extends React.Component<{}, {}> {
-
+  constructor(file: File, distance: Number) {
+    this.file = file;
+    this.distance = distance;
+  }
 }

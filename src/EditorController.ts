@@ -16,10 +16,6 @@ export type EditorProps = {
   camera: BABYLON.ArcRotateCamera;
 }
 
-export type EditorState = {
-
-}
-
 export default class EditorController {
   props: EditorProps;
   zoomIn:boolean = false;

@@ -1,17 +1,25 @@
 import React from 'react';
 import Layer from './Layer';
+import ImageContainer from './ImageContainer';
 
 export type UIStackProps = {
-  files : Layer[]; 
+  onAdd: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  layers : Layer[]; 
 }
 
-export default class UIStack extends React.Component<{}, {}> {
-  
-  
+export default class UIStack extends React.Component<UIStackProps, {}> {
   render () {
+    const layers = this.props.layers;
+    const stack = layers.map((layer) =>
+      (<li key={layer.file.name}><ImageContainer file={layer.file} onChange={undefined}/></li>)
+    );
+
+    console.log("props:", this.props);
+
     return (
       <ul>
-
+        {stack}
+        <li key="addImage"><ImageContainer file={undefined} onChange={this.props.onAdd} /></li>
       </ul>
     );
   }

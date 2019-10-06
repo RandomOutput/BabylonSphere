@@ -3,9 +3,10 @@ import * as BABYLON from 'babylonjs';
 import BabylonScene, { SceneEventArgs } from './SceneComponent'; // import the component above linking to file we just created.
 import ReactDOM from 'react-dom';
 import 'babylonjs-loaders';
-import ImageContainer from './ImageContainer';
+import UIStack from "./UIStack";
 import './index.css';
 import EditorController from './EditorController';
+import Layer from './Layer';
 
 export type PageProps = {
 
@@ -16,6 +17,7 @@ export type PageState = {
   hasImage: boolean;
   textureURL?: string;
   editorController?: EditorController;
+  layers: Layer[];
 }
 
 class PageWithScene extends React.Component<PageProps, PageState> {
@@ -25,13 +27,13 @@ class PageWithScene extends React.Component<PageProps, PageState> {
     this.state = {
       scene: undefined,
       hasImage: false,
-      textureURL: undefined,
-      editorController: undefined
+      editorController: undefined,
+      layers: [],
     }
   }
 
   imageChange(e : React.ChangeEvent<HTMLInputElement>) {
-    console.log("imageChange", e);
+    console.log("imageChange");
 
     if(!e.target.files) {
       return;
@@ -54,6 +56,8 @@ class PageWithScene extends React.Component<PageProps, PageState> {
       if(this.state.editorController) {
         this.state.editorController.setTexture(url);
       }
+      const layers = this.state.layers.concat([new Layer(files[0], 2.0)]);
+      this.setState({ layers: layers });
     };
 
     reader.readAsArrayBuffer(files[0]);
@@ -84,7 +88,7 @@ class PageWithScene extends React.Component<PageProps, PageState> {
     
     engine.runRenderLoop(() => {
       ec.onTick();
-      
+
       if(scene.cameras.length <= 0) {
         return;
       }
@@ -106,7 +110,11 @@ class PageWithScene extends React.Component<PageProps, PageState> {
     <div>
       {showScene()}
       <div className="UI-container">
-      <ImageContainer onChange={this.imageChange.bind(this)}/>
+        <UIStack layers={this.state.layers} onAdd={(e : React.ChangeEvent<HTMLInputElement>) => 
+        {
+          console.log("first!");
+          this.imageChange(e);
+        }}/>
       </div>
     </div>
     );
