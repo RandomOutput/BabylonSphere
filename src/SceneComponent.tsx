@@ -44,7 +44,6 @@ export default class Scene extends React.Component<SceneProps & React.HTMLAttrib
     );
 
     let scene = new BABYLON.Scene(this.engine);
-    //this.scene = scene;
 
     if (typeof this.props.onSceneMount === 'function') {
       this.props.onSceneMount({
@@ -89,6 +88,6 @@ export default class Scene extends React.Component<SceneProps & React.HTMLAttrib
         {...opts}
         ref={this.onCanvasLoaded}
       />
-    )
+    );
   }
 }

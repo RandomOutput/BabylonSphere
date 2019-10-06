@@ -2,7 +2,11 @@ import React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faFileImage } from '@fortawesome/free-solid-svg-icons'
 
-export default (props: any) => {
+export type ImageContainerProps = {
+  onChange : (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default (props: ImageContainerProps) => {
   return (
     <div className="image-container">
       <span className='image-name'></span>
