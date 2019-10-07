@@ -1,12 +1,11 @@
 import * as BABYLON from 'babylonjs';
+import BabylonImageLayer from './BabylonImageLayer';
 
 let flatnessDirection = 1.0;
 let flatnessSpeed = 0.5;
 let flatness = 0.0;
 let lastTime = Date.now();
 const speed:number = 1.0;
-
-let shaderMaterial: BABYLON.ShaderMaterial | null;
 
 export type EditorProps = {
   scene: BABYLON.Scene;
@@ -21,60 +20,17 @@ export default class EditorController {
   zoomIn:boolean = false;
   zoomOut:boolean = false;
   camera?:BABYLON.ArcRotateCamera = undefined;
+  layers : Map<string, BabylonImageLayer> = new Map();
+  prototypeMesh : BABYLON.AbstractMesh;
+  planeDirection:BABYLON.Vector3 = BABYLON.Vector3.Backward();
 
   constructor(props: EditorProps) {
     this.props = props;
-  }
 
-  setupShaderMaterial(scene: BABYLON.Scene, facing: BABYLON.Vector3) : BABYLON.ShaderMaterial {
-    const tex = new BABYLON.Texture("Copenhagen.jpg", scene, false, true);
-
-    let shaderMaterial = new BABYLON.ShaderMaterial("shader", scene, "./360Sphere",
-    {
-      needAlphaBlending: true,
-      attributes: ["position", "normal", "uv"],
-      uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "flatness"]
-    });
-
-    shaderMaterial.backFaceCulling = true;
-    shaderMaterial.sideOrientation = BABYLON.Mesh.FRONTSIDE;
-
-    shaderMaterial.setFloat("flatness", flatness);
-    shaderMaterial.setTexture("textureSampler", tex);
-    shaderMaterial.setVector3("target", facing);
-    
-    console.log("shaderMaterial", shaderMaterial);
-
-    return shaderMaterial;
-  }
-
-  setupGroundMaterial(scene: BABYLON.Scene) : BABYLON.StandardMaterial {
-    let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    groundMaterial.disableLighting = true;
-    groundMaterial.emissiveColor = BABYLON.Color3.White();
-    groundMaterial.diffuseTexture = new BABYLON.Texture("grid.png", scene);
-    groundMaterial.diffuseTexture.hasAlpha = true;
-    return groundMaterial;
-  }
-  
-  setTexture(url: string) {
-    if(!this.props.scene || !shaderMaterial) {
-      console.log("scene",this.props.scene);
-      console.log("shaderMat", shaderMaterial);
-      return;
-    }
-    console.log("set texture", url);
-    const newTex = new BABYLON.Texture(url, this.props.scene);
-    shaderMaterial.setTexture("textureSampler", newTex);
-  }
-  
-  onSceneSetup() : void {
-    console.log("onSceneSetup");
     const worldDistance:number = 20;
     
-    let planeDirection:BABYLON.Vector3 = BABYLON.Vector3.Backward();
-    planeDirection.rotateByQuaternionToRef(
-      BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0,1,0), 20.0), planeDirection);
+    this.planeDirection.rotateByQuaternionToRef(
+      BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0,1,0), 20.0), this.planeDirection);
     
     this.props.scene.clearColor = new BABYLON.Color4(1.0, 1.0, 1.0, 1.0);
 
@@ -90,36 +46,12 @@ export default class EditorController {
     this.props.camera.attachControl(this.props.canvas, true);
     this.props.camera.minZ = 0.1;
 
-    shaderMaterial = this.setupShaderMaterial(this.props.scene, planeDirection);
-
     const groundMaterial = this.setupGroundMaterial(this.props.scene);
 
     let groundPlane:BABYLON.Mesh = BABYLON.MeshBuilder.CreateGround("ground", { width: 120, height: 120}, this.props.scene);
     groundPlane.position = BABYLON.Vector3.Down().scale(worldDistance / 2.0);
     groundPlane.material = groundMaterial;
 
-    BABYLON.SceneLoader.LoadAssetContainer("./", "UnrollSphere3.glb", this.props.scene, (loaded) => {
-      
-      let meshes = loaded.meshes;
-      let sphereMesh;
-      let root;
-      for(let mesh of meshes) {
-        if(mesh.id === "__root__") {
-          mesh.scaling = BABYLON.Vector3.One().scale(10.0);
-          this.props.scene.addMesh(mesh, true);
-          root = mesh;
-        }
-      }
-
-      meshes = this.props.scene.meshes;
-      for(let mesh of this.props.scene.meshes) {
-        if(mesh.id === "Sphere"){
-          sphereMesh = mesh;
-        }
-      }
-      
-      (sphereMesh as BABYLON.AbstractMesh).material = shaderMaterial;
-    });
 
     this.props.scene.actionManager = new BABYLON.ActionManager(this.props.scene);
 
@@ -152,6 +84,58 @@ export default class EditorController {
       parameter: 'q',
     },
     () => flatnessDirection *= -1.0));
+
+    BABYLON.SceneLoader.LoadAssetContainer("./", "UnrollSphere3.glb", this.props.scene, (loaded) => {
+      const meshes = loaded.meshes;
+      let rootMesh;
+      for(let mesh of meshes) {
+        if(mesh.id === "__root__") {
+          rootMesh = mesh;
+        }
+      }
+
+      if(!rootMesh) { return; }
+
+      rootMesh.scaling = BABYLON.Vector3.One().scale(10.0); // TODO: Figure out units      
+      this.prototypeMesh = rootMesh;
+      //this.createImageLayer("Copenhagen.jpg");
+    });
+  }
+
+  setupGroundMaterial(scene: BABYLON.Scene) : BABYLON.StandardMaterial {
+    let groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
+    groundMaterial.disableLighting = true;
+    groundMaterial.emissiveColor = BABYLON.Color3.White();
+    groundMaterial.diffuseTexture = new BABYLON.Texture("grid.png", scene);
+    groundMaterial.diffuseTexture.hasAlpha = true;
+    return groundMaterial;
+  }
+
+  createImageLayer(url : string) {
+    if(!this.prototypeMesh) {
+      return;
+    }
+
+    const newLayer : BabylonImageLayer = new BabylonImageLayer(this.props.scene, url, 2.0, this.planeDirection, flatness, this.prototypeMesh);
+    this.layers.set(url, newLayer);
+    return url;
+  }
+
+  removeImageLayer(key : string) {
+    const layer = this.layers.get(key);
+    if(!layer) {
+      return;
+    }
+
+    layer.cleanupMesh();
+    this.layers.delete(key);
+  }
+
+  getImageLayer(key : string) {
+    return this.layers.get(key);
+  }
+  
+  setTexture(url: string) {
   }
 
   onTick() {
@@ -179,9 +163,9 @@ export default class EditorController {
     else if(flatness <= 0) {
       flatness = 0;
     }
-    
-    if(shaderMaterial) { 
-      shaderMaterial.setFloat("flatness", flatness);
+
+    for(let layer of this.layers.values()) {
+      layer.setFlatness(flatness);
     }
   }
 }

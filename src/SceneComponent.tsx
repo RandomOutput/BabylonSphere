@@ -1,6 +1,5 @@
 import * as BABYLON from 'babylonjs';
 import React from 'react';
-import { throwStatement } from '@babel/types';
 
 export type SceneEventArgs = {
   engine: BABYLON.Engine,

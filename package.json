@@ -10,12 +10,12 @@
     "@types/node": "12.7.2",
     "@types/react": "16.9.2",
     "@types/react-dom": "16.9.0",
-    "babylonjs": "^4.0.3",
-    "babylonjs-loaders": "^4.0.3",
+    "babylonjs": ">=4.1.0",
+    "babylonjs-loaders": ">=4.1.0-alpha.23",
     "font-awesome": "^4.7.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.1.1",
+    "react-scripts": "3.1.2",
     "typescript": "3.5.3"
   },
   "scripts": {
@@ -23,9 +23,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [

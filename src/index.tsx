@@ -7,6 +7,7 @@ import UIStack from "./UIStack";
 import './index.css';
 import EditorController from './EditorController';
 import Layer from './Layer';
+import ImageLayer from './ImageLayer';
 
 export type PageProps = {
 
@@ -56,7 +57,7 @@ class PageWithScene extends React.Component<PageProps, PageState> {
       if(this.state.editorController) {
         this.state.editorController.setTexture(url);
       }
-      const layers = this.state.layers.concat([new Layer(files[0], 2.0)]);
+      const layers = this.state.layers.concat([new Layer(url, files[0], 2.0)]);
       this.setState({ layers: layers });
     };
 
@@ -84,8 +85,6 @@ class PageWithScene extends React.Component<PageProps, PageState> {
 
     this.setState({ editorController: ec});
     
-    ec.onSceneSetup();
-    
     engine.runRenderLoop(() => {
       ec.onTick();
 
@@ -99,8 +98,11 @@ class PageWithScene extends React.Component<PageProps, PageState> {
 
   render() {
     const showScene = () => {
+      const imageLayers = this.state.layers.map((layer) => <ImageLayer editorController={this.state.editorController} url={layer.url} distance={2.0} />);
+
       return (
       <div className="canvas-container">
+        {imageLayers}
         <BabylonScene height={400} width={800} onSceneMount={this.onSceneMount.bind(this)} />
       </div>
       );
