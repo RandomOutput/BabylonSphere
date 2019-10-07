@@ -98,7 +98,7 @@ class PageWithScene extends React.Component<PageProps, PageState> {
 
   render() {
     const showScene = () => {
-      const imageLayers = this.state.layers.map((layer) => <ImageLayer editorController={this.state.editorController} url={layer.url} distance={2.0} />);
+      const imageLayers = this.state.layers.map((layer) => <ImageLayer editorController={this.state.editorController} key={layer.file.name} url={layer.url} distance={2.0} />);
 
       return (
       <div className="canvas-container">

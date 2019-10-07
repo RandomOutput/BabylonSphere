@@ -30,14 +30,11 @@ export default class BabylonImageLayer {
     shaderMaterial.setFloat("flatness", this.flatness);
     shaderMaterial.setTexture("textureSampler", tex);
     shaderMaterial.setVector3("target", facing);
-    
-    console.log("shaderMaterial", shaderMaterial);
 
     return shaderMaterial;
   }
 
   setTexture(url : string) {
-    console.log("set texture", url);
     const newTex = new BABYLON.Texture(url, this.scene, false, true);
     this.material.setTexture("textureSampler", newTex);
   }
@@ -56,7 +53,8 @@ export default class BabylonImageLayer {
     this.scene.addMesh(mesh, true);
     let sphereMesh;
     for(let subMesh of mesh.getChildMeshes()) {
-      if(subMesh.id === "Sphere"){
+      console.log("submesh id", subMesh.id);
+      if(subMesh.id === "ImageMesh.Sphere.Sphere"){
         sphereMesh = subMesh;
       }
     }
@@ -66,7 +64,7 @@ export default class BabylonImageLayer {
       return;
     }
     
-    //(sphereMesh as BABYLON.AbstractMesh).material = this.material;
+    (sphereMesh as BABYLON.AbstractMesh).material = this.material;
   }
 
   setFlatness(flatness : number) {
