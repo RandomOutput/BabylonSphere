@@ -11,7 +11,7 @@ export default class UIStack extends React.Component<UIStackProps, {}> {
   render () {
     const layers = this.props.layers;
     const stack = layers.map((layer) =>
-      (<li key={layer.file.name}><ImageContainer file={layer.file} onChange={undefined}/></li>)
+      (<li key={layer.file.name}><ImageContainer layer={layer} onChange={undefined}/></li>)
     );
 
     console.log("props:", this.props);
@@ -19,7 +19,7 @@ export default class UIStack extends React.Component<UIStackProps, {}> {
     return (
       <ul>
         {stack}
-        <li key="addImage"><ImageContainer file={undefined} onChange={this.props.onAdd} /></li>
+        <li key="addImage"><ImageContainer layer={undefined} onChange={this.props.onAdd} /></li>
       </ul>
     );
   }

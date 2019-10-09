@@ -17,8 +17,8 @@ export default class ImageLayer extends React.Component<ImageLayerProps, ImageLa
     if(!this.props.editorController) {
       return;
     }
-
-    const key = this.props.editorController.createImageLayer(this.props.url);
+    
+    const key = this.props.editorController.createImageLayer(this.props.url, this.props.distance);
     this.setState({layerKey: key});
   }
   

@@ -34,11 +34,10 @@ class PageWithScene extends React.Component<PageProps, PageState> {
   }
 
   imageChange(e : React.ChangeEvent<HTMLInputElement>) {
-    console.log("imageChange");
-
     if(!e.target.files) {
       return;
     }
+
     const files = Array.from(e.target.files);
     
     if(files.length <= 0) {
@@ -51,13 +50,15 @@ class PageWithScene extends React.Component<PageProps, PageState> {
         return;
       }
 
-      let buffer:ArrayBuffer = e.target.result;
-      let url = URL.createObjectURL(new Blob([buffer]));
-      console.log(url);
+      const buffer:ArrayBuffer = e.target.result;
+      const url = URL.createObjectURL(new Blob([buffer]));
+/*
       if(this.state.editorController) {
         this.state.editorController.setTexture(url);
       }
-      const layers = this.state.layers.concat([new Layer(url, files[0], 2.0)]);
+*/
+      const distance = 10.0 + (Math.random() * 10.0);
+      const layers = this.state.layers.concat([new Layer(url, files[0], distance)]);
       this.setState({ layers: layers });
     };
 
@@ -98,7 +99,7 @@ class PageWithScene extends React.Component<PageProps, PageState> {
 
   render() {
     const showScene = () => {
-      const imageLayers = this.state.layers.map((layer) => <ImageLayer editorController={this.state.editorController} key={layer.file.name} url={layer.url} distance={2.0} />);
+      const imageLayers = this.state.layers.map((layer) => <ImageLayer editorController={this.state.editorController} key={layer.file.name} url={layer.url} distance={layer.distance} />);
 
       return (
       <div className="canvas-container">
@@ -114,7 +115,6 @@ class PageWithScene extends React.Component<PageProps, PageState> {
       <div className="UI-container">
         <UIStack layers={this.state.layers} onAdd={(e : React.ChangeEvent<HTMLInputElement>) => 
         {
-          console.log("first!");
           this.imageChange(e);
         }}/>
       </div>

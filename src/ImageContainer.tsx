@@ -1,9 +1,10 @@
 import React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faFileImage } from '@fortawesome/free-solid-svg-icons'
+import Layer from "./Layer";
 
 export type ImageContainerProps = {
-  file ?: File;
+  layer ?: Layer;
   onChange ?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -12,7 +13,7 @@ export default (props: ImageContainerProps) => {
     return (
       <div className="image-container">
         <div className="file-label">
-          { props.file ? props.file.name : "NO_FILE_NAME" }
+          { props.layer ? (props.layer.file.name + " | " + props.layer.distance) : "NO_FILE_NAME" }
         </div>
       </div>
     );

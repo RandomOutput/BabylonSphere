@@ -52,7 +52,6 @@ export default class EditorController {
     groundPlane.position = BABYLON.Vector3.Down().scale(worldDistance / 2.0);
     groundPlane.material = groundMaterial;
 
-
     this.props.scene.actionManager = new BABYLON.ActionManager(this.props.scene);
 
     this.props.scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction({
@@ -111,12 +110,12 @@ export default class EditorController {
     return groundMaterial;
   }
 
-  createImageLayer(url : string) {
+  createImageLayer(url : string, distance : number) {
     if(!this.prototypeMesh) {
       return;
     }
 
-    const newLayer : BabylonImageLayer = new BabylonImageLayer(this.props.scene, url, 2.0, this.planeDirection, flatness, this.prototypeMesh);
+    const newLayer : BabylonImageLayer = new BabylonImageLayer(this.props.scene, url, distance, this.planeDirection, flatness, this.prototypeMesh);
     this.layers.set(url, newLayer);
     return url;
   }
@@ -134,7 +133,7 @@ export default class EditorController {
   getImageLayer(key : string) {
     return this.layers.get(key);
   }
-  
+
   setTexture(url: string) {
   }
 

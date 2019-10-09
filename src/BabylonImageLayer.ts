@@ -5,10 +5,12 @@ export default class BabylonImageLayer {
   material : BABYLON.ShaderMaterial;
   flatness : number;
   mesh : BABYLON.AbstractMesh | undefined;
+  distance : number;
 
   constructor (scene : BABYLON.Scene, url : string, distance : number, facing : BABYLON.Vector3, initialFlatness : number, sourceMesh : BABYLON.AbstractMesh) {
     this.scene = scene;
     this.flatness = initialFlatness;
+    this.distance = distance;
     this.material = this.setupShaderMaterial(this.scene, facing);
     this.setTexture(url);
     this.setupMesh(sourceMesh);
@@ -40,19 +42,30 @@ export default class BabylonImageLayer {
   }
 
   setDistance(distance : number) {
-    console.log("NOT IMPLEMENTED");
+    console.log("distance", distance);
+
+    if(!this.mesh) {
+      return;
+    }
+
+    const forward = this.mesh.forward;
+    const newPosition = forward.scale(distance);
+    this.mesh.position = newPosition;
+    console.log("new position", newPosition);
   }
 
   setupMesh(prototypeMesh : BABYLON.AbstractMesh) {
-    const mesh = prototypeMesh.clone("ImageMesh", null);
-    
-    if(!mesh) {
+    const newMesh = prototypeMesh.clone("ImageMesh", null);
+
+    if(!newMesh) {
       return;
     }
+
+    this.mesh = newMesh;
     
-    this.scene.addMesh(mesh, true);
+    this.scene.addMesh(this.mesh, true);
     let sphereMesh;
-    for(let subMesh of mesh.getChildMeshes()) {
+    for(let subMesh of this.mesh.getChildMeshes()) {
       console.log("submesh id", subMesh.id);
       if(subMesh.id === "ImageMesh.Sphere.Sphere"){
         sphereMesh = subMesh;
@@ -65,6 +78,8 @@ export default class BabylonImageLayer {
     }
     
     (sphereMesh as BABYLON.AbstractMesh).material = this.material;
+    
+    this.setDistance(this.distance);
   }
 
   setFlatness(flatness : number) {
