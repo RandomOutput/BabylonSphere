@@ -1,24 +1,12 @@
 import React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faFileImage } from '@fortawesome/free-solid-svg-icons'
-import Layer from "./Layer";
 
-export type ImageContainerProps = {
-  layer ?: Layer;
+export type NewLayerButtonProps = {
   onChange ?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default (props: ImageContainerProps) => {
-  if(!props.onChange) {
-    return (
-      <div className="image-container">
-        <div className="file-label">
-          { props.layer ? (props.layer.file.name + " | " + props.layer.distance) : "NO_FILE_NAME" }
-        </div>
-      </div>
-    );
-  }
-
+export default (props: NewLayerButtonProps) => {
   return (
     <div className="image-container">
       <span className='image-name'></span>

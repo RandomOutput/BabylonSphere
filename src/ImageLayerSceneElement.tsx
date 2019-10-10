@@ -1,28 +1,28 @@
 import * as React from 'react';
 import EditorController from './EditorController';
 import BabylonImageLayer from './BabylonImageLayer';
+import Layer from './Layer';
 
-export type ImageLayerProps = {
+export type ImageLayerSceneElementProps = {
   editorController : EditorController | undefined;
-  url : string;
-  distance : number;
+  layer : Layer;
 }
 
-export type ImageLayerState = {
+export type ImageLayerSceneElementState = {
   layerKey : string | undefined;
 }
 
-export default class ImageLayer extends React.Component<ImageLayerProps, ImageLayerState> {
+export default class ImageLayerSceneElement extends React.Component<ImageLayerSceneElementProps, ImageLayerSceneElementState> {
   componentDidMount() {
     if(!this.props.editorController) {
       return;
     }
     
-    const key = this.props.editorController.createImageLayer(this.props.url, this.props.distance);
+    const key = this.props.editorController.createImageLayer(this.props.layer.url, this.props.layer.distance);
     this.setState({layerKey: key});
   }
   
-  componentDidUpdate(prevProps : ImageLayerProps) {
+  componentDidUpdate(prevProps : ImageLayerSceneElementProps) {
     if(!this.state.layerKey || !this.props.editorController) {
       return;
     }
@@ -33,8 +33,8 @@ export default class ImageLayer extends React.Component<ImageLayerProps, ImageLa
       return;
     }
 
-    if(this.props.distance !== prevProps.distance) {
-      imageLayer.setDistance(this.props.distance);
+    if(this.props.layer.distance !== prevProps.layer.distance) {
+      imageLayer.setDistance(this.props.layer.distance);
     }
   }
 

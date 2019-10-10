@@ -7,7 +7,8 @@ import UIStack from "./UIStack";
 import './index.css';
 import EditorController from './EditorController';
 import Layer from './Layer';
-import ImageLayer from './ImageLayer';
+import ImageLayer from './ImageLayerSceneElement';
+import ImageLayerSceneElement from './ImageLayerSceneElement';
 
 export type PageProps = {
 
@@ -52,11 +53,7 @@ class PageWithScene extends React.Component<PageProps, PageState> {
 
       const buffer:ArrayBuffer = e.target.result;
       const url = URL.createObjectURL(new Blob([buffer]));
-/*
-      if(this.state.editorController) {
-        this.state.editorController.setTexture(url);
-      }
-*/
+      
       const distance = 10.0 + (Math.random() * 10.0);
       const layers = this.state.layers.concat([new Layer(url, files[0], distance)]);
       this.setState({ layers: layers });
@@ -99,7 +96,7 @@ class PageWithScene extends React.Component<PageProps, PageState> {
 
   render() {
     const showScene = () => {
-      const imageLayers = this.state.layers.map((layer) => <ImageLayer editorController={this.state.editorController} key={layer.file.name} url={layer.url} distance={layer.distance} />);
+      const imageLayers = this.state.layers.map((layer) => <ImageLayerSceneElement editorController={this.state.editorController} layer={layer} />);
 
       return (
       <div className="canvas-container">

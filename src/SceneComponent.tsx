@@ -16,8 +16,6 @@ export type SceneProps = {
 };
 
 export default class Scene extends React.Component<SceneProps & React.HTMLAttributes<HTMLCanvasElement>, {}> {
-
-  //private scene: BABYLON.Scene;
   private engine: BABYLON.Engine;
   private canvas: HTMLCanvasElement;
 
