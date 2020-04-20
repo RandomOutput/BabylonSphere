@@ -10,7 +10,7 @@ Babylon Sphere is a small nights and weekends project that resulted from some te
 
 ### Steps
 1. Clone the repo.
-2. Run `yarn upgrade` to update local packages.
+2. Run `yarn install` to install depedencies.
 3. Run `yarn start` to run the application locally. 
 
 ## Mixing a 3D Babylon Scene with React
