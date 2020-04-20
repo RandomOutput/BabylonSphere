@@ -7,7 +7,6 @@ import UIStack from "./UIStack";
 import './index.css';
 import EditorController from './EditorController';
 import Layer from './Layer';
-import ImageLayer from './ImageLayerSceneElement';
 import ImageLayerSceneElement from './ImageLayerSceneElement';
 
 export type PageProps = {
