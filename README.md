@@ -1,44 +1,24 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Babylon Sphere
+_A web-based tool for comping together several 360 photo / drawing layers and save / share that as a photosphere rendered in the browser with Bablyon.js._
 
-## Available Scripts
+Bablyon Sphere is a small nights and weekends project that resulted from some teaching I did at the Copenhagen Institute for Interaction Design in 2019. I introduced students to a simple workflow for using 360 photos and drawing on 360 grids and loading them on VR devices as photospheres so they could quickly mockup immersive experiences using tools they already know like pencil and paper or Photoshop and uses [LookSee VR](https://apps.apple.com/us/app/looksee-vr/id1093268628) as a viewer. It is targeted for very low fidelity prototypes and is largely an experiment in how far one can get with 360 photospheres for previsualizing an AR/VR application (and a chance for me to learn React and Babylon.js).
 
-In the project directory, you can run:
+## Setting Up a Dev Environment
+### Requirements 
+- Git
+- Yarn
 
-### `npm start`
+### Steps
+1. Clone the repo.
+2. Run `yarn upgrade` to update local packages.
+3. Run `yarn start` to run the application locally. 
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Mixing a 3D Bablyon Scene with React
+Babylon Sphere uses React to drive the core logic and data-model for the application. It then uses a combination of 2D UI rendered with React and TSX; and Bablyon.js to render the 3D scene. React creates headless DOM elements like `ImageLayerSceneElement` to represent the data in the Bablyon scene. These headless elements are paired with 3D objects in the Babylon scene. The pair to `ImageLayerSceneElement` is `BablyonImageLayer` (TODO: Give these better names). A `Layer` may be represented in other ways as well, such as in the 2D UI stack with `ImagelayerInspector`.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Finding Your Way Around
+**`EditorController.ts`**: Editor Controller generally runs the show. It handles the Babylon tick and sets up the 3D scene. 
 
-### `npm test`
+**`index.tsx`**: Defines the page at the top level. Instantiates the instance of Editor Controller.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+**`Layer.ts`**: Defines the data-model for a photosphere layer. This is the most basic representation of a Layer.
