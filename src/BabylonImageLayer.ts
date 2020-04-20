@@ -16,6 +16,8 @@ export default class BabylonImageLayer {
     this.setupMesh(sourceMesh);
   }
 
+  /// Sets up the material that is used to transition the photosphere between 
+  /// a sphere and flat.
   setupShaderMaterial(scene: BABYLON.Scene, facing: BABYLON.Vector3) : BABYLON.ShaderMaterial {
     const tex = new BABYLON.Texture(null, scene, false, true);
 
@@ -36,26 +38,15 @@ export default class BabylonImageLayer {
     return shaderMaterial;
   }
 
+  /// Sets the texture (the photoshphere image) on the model.
   setTexture(url : string) {
     const newTex = new BABYLON.Texture(url, this.scene, false, true);
     this.material.setTexture("textureSampler", newTex);
   }
 
-  setDistance(distance : number) {
-    console.log("distance", distance);
-
-    if(!this.mesh) {
-      return;
-    }
-
-    const forward = this.mesh.forward;
-    const newPosition = forward.scale(distance);
-    this.mesh.position = newPosition;
-    console.log("new position", newPosition);
-  }
-
+  /// Clones the "prototype mesh" for photospheres 
   setupMesh(prototypeMesh : BABYLON.AbstractMesh) {
-    const newMesh = prototypeMesh.clone("ImageMesh", null);
+    const newMesh : BABYLON.Nullable<BABYLON.AbstractMesh> = prototypeMesh.clone("ImageMesh", null);
 
     if(!newMesh) {
       return;
@@ -82,10 +73,38 @@ export default class BabylonImageLayer {
     this.setDistance(this.distance);
   }
 
-  setFlatness(flatness : number) {
-    if(this.material) { 
-      this.material.setFloat("flatness", flatness);
+  setDistance(distance : number) {
+    console.log("distance", distance);
+
+    if(!this.mesh) {
+      return;
     }
+
+    const forward = this.mesh.forward;
+    const newPosition = forward.scale(distance);
+    this.mesh.position = newPosition;
+    console.log("new position", newPosition);
+  }
+
+  setFlatness(flatness : number) {
+    if(!this.material) {
+      return;
+    }
+
+    if(!this.mesh) {
+      return;
+    }
+
+    this.material.setFloat("flatness", flatness);
+    
+    const scaledDistance : number = this.distance * flatness;
+    const newPosition : BABYLON.Vector3 = this.mesh.forward.scale(scaledDistance);
+    this.mesh.position = newPosition;
+
+    const flatScale : number = 10.0;
+    const roundScale : number = this.distance;
+    const newScale : number = roundScale + ((flatScale - roundScale) * flatness);
+    this.mesh.scaling = BABYLON.Vector3.One().scale(newScale);
   }
 
   cleanupMesh() {
