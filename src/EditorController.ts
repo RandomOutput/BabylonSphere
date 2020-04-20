@@ -142,15 +142,6 @@ export default class EditorController {
       return;
     }
 
-    if(this.zoomIn) {
-      this.props.camera.radius -= speed;
-      this.props.camera.radius = Math.max(this.props.camera.radius, 1.0);
-    }
-    else if(this.zoomOut) {
-      this.props.camera.radius += speed;
-      this.props.camera.radius = Math.min(this.props.camera.radius, 40.0);
-    }
-
     const deltaTime = (Date.now() - lastTime) / 1000;
     lastTime = Date.now();
     const flatnessDelta = flatnessDirection * flatnessSpeed * deltaTime; 
@@ -166,5 +157,10 @@ export default class EditorController {
     for(let layer of this.layers.values()) {
       layer.setFlatness(flatness);
     }
+
+    const nearCamera : number = 1.0;
+    const farCamera : number = 40.0;
+    const newCameraDistance : number = nearCamera + ((farCamera - nearCamera) * flatness);
+    this.props.camera.radius = newCameraDistance;
   }
 }
